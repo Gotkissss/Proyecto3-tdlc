@@ -1,0 +1,26 @@
+# Reconocedora clásica { a^n b^n | n >= 1 } (Hopcroft, ejemplo 8.2).
+# Usa la forma abreviada: read/write escalares = sin memoria.
+mt:
+  name: "a^n b^n"
+  description: "Reconoce { a^n b^n | n >= 1 } marcando cada a con X y su b correspondiente con Y."
+  states: [q0, q1, q2, q3, q4]
+  input_alphabet: [a, b]
+  tape_alphabet: [a, b, X, Y, B]
+  initial_state: q0
+  accept_states: [q4]
+  transitions:
+    - {state: q0, read: a, write: X, move: R, next: q1}
+    - {state: q0, read: Y, write: Y, move: R, next: q3}
+    - {state: q1, read: a, write: a, move: R, next: q1}
+    - {state: q1, read: Y, write: Y, move: R, next: q1}
+    - {state: q1, read: b, write: Y, move: L, next: q2}
+    - {state: q2, read: a, write: a, move: L, next: q2}
+    - {state: q2, read: Y, write: Y, move: L, next: q2}
+    - {state: q2, read: X, write: X, move: R, next: q0}
+    - {state: q3, read: Y, write: Y, move: R, next: q3}
+    - {state: q3, read: B, write: B, move: R, next: q4}
+  inputs:
+    - "aabb"
+    - "aaabbb"
+    - "aab"
+    - "abab"
