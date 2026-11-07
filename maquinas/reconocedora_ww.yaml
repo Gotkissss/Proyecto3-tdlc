@@ -1,0 +1,58 @@
+# MT RECONOCEDORA: L = { ww | w ∈ {a,b}+ }
+#
+# L NO es libre de contexto (lema de bombeo para LLC), así que ningún autómata
+# de pila lo reconoce. La MT trabaja en dos fases:
+#
+#  Fase 1 — encontrar la mitad (q0..q3):
+#    Marca alternadamente el símbolo no marcado más a la izquierda y el más a la
+#    derecha (a→x, b→y). Si la longitud es impar, q2 no encuentra qué marcar y la
+#    MT rechaza. Cuando q0 encuentra un símbolo ya marcado está parada en el
+#    primer símbolo de la segunda mitad.
+#
+#  Fase 2 — comparar mitades usando la MEMORIA del control finito (q4..q8):
+#    q4 desmarca la segunda mitad (x→a, y→b) para distinguirla de la primera.
+#    q6 toma el primer símbolo pendiente de la primera mitad, lo GUARDA en la
+#    memoria del estado ([q7, a] o [q7, b]) y lo tacha con Z. q7 viaja a la
+#    derecha hasta el primer símbolo pendiente de la segunda mitad y lo compara
+#    con la memoria: si coincide lo tacha con Z y regresa (q8); si no, rechaza.
+#    Cuando q6 ya no encuentra símbolos pendientes (lee B) la cadena es ww → qf.
+#
+# Formato:  read: [símbolo en cinta, memoria]   write: [nueva memoria, símbolo a escribir]
+mt:
+  name: "Reconocedora ww"
+  description: "Reconoce L = { ww | w ∈ {a,b}+ } (lenguaje no libre de contexto) usando memoria en el control finito."
+  states: [q0, q1, q2, q3, q4, q5, q6, q7, q8, qf]
+  input_alphabet: [a, b]
+  tape_alphabet: [a, b, x, y, Z, B]
+  initial_state: q0
+  accept_states: [qf]
+  transitions:
+    # ---------- Fase 1: q0 marca el extremo izquierdo no marcado ----------
+    - {state: q0, read: [a, B], write: [B, x], move: R, next: q1}
+    - {state: q0, read: [b, B], write: [B, y], move: R, next: q1}
+    # q0 encuentra la mitad (por ahora acepta: falta comparar las mitades)
+    - {state: q0, read: [x, B], write: [B, x], move: S, next: qf}  # TODO fase 2
+    - {state: q0, read: [y, B], write: [B, y], move: S, next: qf}  # TODO fase 2
+    # ---------- q1: viaja a la derecha hasta el final de la zona no marcada ----------
+    - {state: q1, read: [a, B], write: [B, a], move: R, next: q1}
+    - {state: q1, read: [b, B], write: [B, b], move: R, next: q1}
+    - {state: q1, read: [x, B], write: [B, x], move: L, next: q2}
+    - {state: q1, read: [y, B], write: [B, y], move: L, next: q2}
+    - {state: q1, read: [B, B], write: [B, B], move: L, next: q2}
+    # ---------- q2: marca el extremo derecho no marcado (si no hay -> impar -> rechaza) ----------
+    - {state: q2, read: [a, B], write: [B, x], move: L, next: q3}
+    - {state: q2, read: [b, B], write: [B, y], move: L, next: q3}
+    # ---------- q3: regresa a la izquierda ----------
+    - {state: q3, read: [a, B], write: [B, a], move: L, next: q3}
+    - {state: q3, read: [b, B], write: [B, b], move: L, next: q3}
+    - {state: q3, read: [x, B], write: [B, x], move: R, next: q0}
+    - {state: q3, read: [y, B], write: [B, y], move: R, next: q0}
+  inputs:
+    # Aceptadas (longitud >= 5)
+    - "abaaba"      # w = aba
+    - "babbbabb"    # w = babb
+    - "aabbaabb"    # w = aabb
+    # Rechazadas (longitud >= 5)
+    - "abaab"       # longitud impar
+    - "abbaab"      # abb != aab
+    - "aabbab"      # aab != bab
