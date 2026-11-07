@@ -30,9 +30,9 @@ mt:
     # ---------- Fase 1: q0 marca el extremo izquierdo no marcado ----------
     - {state: q0, read: [a, B], write: [B, x], move: R, next: q1}
     - {state: q0, read: [b, B], write: [B, y], move: R, next: q1}
-    # q0 encuentra la mitad (por ahora acepta: falta comparar las mitades)
-    - {state: q0, read: [x, B], write: [B, x], move: S, next: qf}  # TODO fase 2
-    - {state: q0, read: [y, B], write: [B, y], move: S, next: qf}  # TODO fase 2
+    # q0 encuentra la mitad: empieza a desmarcar la segunda mitad
+    - {state: q0, read: [x, B], write: [B, a], move: R, next: q4}
+    - {state: q0, read: [y, B], write: [B, b], move: R, next: q4}
     # ---------- q1: viaja a la derecha hasta el final de la zona no marcada ----------
     - {state: q1, read: [a, B], write: [B, a], move: R, next: q1}
     - {state: q1, read: [b, B], write: [B, b], move: R, next: q1}
@@ -47,6 +47,36 @@ mt:
     - {state: q3, read: [b, B], write: [B, b], move: L, next: q3}
     - {state: q3, read: [x, B], write: [B, x], move: R, next: q0}
     - {state: q3, read: [y, B], write: [B, y], move: R, next: q0}
+    # ---------- Fase 2: q4 desmarca la segunda mitad ----------
+    - {state: q4, read: [x, B], write: [B, a], move: R, next: q4}
+    - {state: q4, read: [y, B], write: [B, b], move: R, next: q4}
+    - {state: q4, read: [B, B], write: [B, B], move: L, next: q5}
+    # ---------- q5: regresa al inicio de la cinta ----------
+    - {state: q5, read: [a, B], write: [B, a], move: L, next: q5}
+    - {state: q5, read: [b, B], write: [B, b], move: L, next: q5}
+    - {state: q5, read: [x, B], write: [B, x], move: L, next: q5}
+    - {state: q5, read: [y, B], write: [B, y], move: L, next: q5}
+    - {state: q5, read: [B, B], write: [B, B], move: R, next: q6}
+    # ---------- q6: toma el siguiente símbolo de la 1a mitad y lo guarda en memoria ----------
+    - {state: q6, read: [Z, B], write: [B, Z], move: R, next: q6}
+    - {state: q6, read: [x, B], write: [a, Z], move: R, next: q7}
+    - {state: q6, read: [y, B], write: [b, Z], move: R, next: q7}
+    - {state: q6, read: [B, B], write: [B, B], move: S, next: qf}
+    # ---------- q7 con memoria 'a': busca el 1er símbolo pendiente de la 2a mitad ----------
+    - {state: q7, read: [x, a], write: [a, x], move: R, next: q7}
+    - {state: q7, read: [y, a], write: [a, y], move: R, next: q7}
+    - {state: q7, read: [Z, a], write: [a, Z], move: R, next: q7}
+    - {state: q7, read: [a, a], write: [B, Z], move: L, next: q8}
+    # ---------- q7 con memoria 'b' ----------
+    - {state: q7, read: [x, b], write: [b, x], move: R, next: q7}
+    - {state: q7, read: [y, b], write: [b, y], move: R, next: q7}
+    - {state: q7, read: [Z, b], write: [b, Z], move: R, next: q7}
+    - {state: q7, read: [b, b], write: [B, Z], move: L, next: q8}
+    # ---------- q8: regresa al inicio para la siguiente comparación ----------
+    - {state: q8, read: [Z, B], write: [B, Z], move: L, next: q8}
+    - {state: q8, read: [x, B], write: [B, x], move: L, next: q8}
+    - {state: q8, read: [y, B], write: [B, y], move: L, next: q8}
+    - {state: q8, read: [B, B], write: [B, B], move: R, next: q6}
   inputs:
     # Aceptadas (longitud >= 5)
     - "abaaba"      # w = aba
