@@ -181,3 +181,6 @@ Incluye pruebas del parser, la cinta y el simulador, y verifica **exhaustivament
 dos MT: la reconocedora contra todas las cadenas de `{a,b}` de longitud ≤ 10 y la
 alteradora contra todas las sumas `a + b` con `0 ≤ a, b < 20`.
 
+## Video
+
+Enlace al video (YouTube, no listado): _pendiente_
