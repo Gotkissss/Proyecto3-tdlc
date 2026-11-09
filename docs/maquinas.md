@@ -103,8 +103,8 @@ stateDiagram-v2
 | `babbbabb` | babb | ACEPTADA | 119 | |
 | `aabbaabb` | aabb | ACEPTADA | 119 | |
 | `abaab` | — | RECHAZADA | 20 | longitud impar: no existe δ([q2, B], x) |
-| `abbaab` | — | RECHAZADA | 50 | 3.ª comparación: memoria `b` ≠ `a` |
-| `aabbab` | — | RECHAZADA | 41 | 2.ª comparación: memoria `a` ≠ `b` |
+| `abbaab` | — | RECHAZADA | 50 | `abb` ≠ `aab`: en la 2.ª comparación la memoria trae `b` y encuentra `a` |
+| `aabbab` | — | RECHAZADA | 41 | `aab` ≠ `bab`: en la 1.ª comparación la memoria trae `a` y encuentra `b` |
 
 ---
 
