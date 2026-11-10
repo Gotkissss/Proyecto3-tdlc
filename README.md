@@ -183,4 +183,4 @@ alteradora contra todas las sumas `a + b` con `0 ≤ a, b < 20`.
 
 ## Video
 
-Enlace al video (YouTube, no listado): _pendiente_
+Enlace al video (YouTube, no listado): https://youtu.be/FcGRZ92pqFs
